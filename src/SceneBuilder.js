@@ -1,48 +1,34 @@
 //global variables
 var camera, renderer, scene;
-var controls;
+var controls,time = Date.now();
+var ray;
 
 //scene attributes
 var WIDTH = window.innerWidth, HEIGHT = window.innerHeight;
 
 function init() {
     scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(45, WIDTH / HEIGHT, 0.1, 10000);
+    camera = new THREE.PerspectiveCamera(75, WIDTH / HEIGHT, 1, 1000);
     renderer = new THREE.WebGLRenderer();
     
     scene.add(camera);
     
-    camera.position.z = 300;
     renderer.setSize(WIDTH, HEIGHT);
-    renderer.setClearColor(0x000000, 1); 
+    renderer.setClearColor(0x000000); 
     document.body.appendChild(renderer.domElement);
     
-    //controls = new THREE.PointerLockControls(camera);
-    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls = new THREE.PointerLockControls(camera);
+    scene.add(controls.getObject());
+    
+    ray = new THREE.Raycaster();
+    ray.ray.direction.set( 0, -1, 0 );
     
     geometry = new THREE.PlaneGeometry( 2000, 2000, 100, 100 );
     geometry.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );
+    var texture = THREE.ImageUtils.loadTexture("textures/floor-wood.jpg")
 
-    for ( var i = 0, l = geometry.vertices.length; i < l; i ++ ) {
-
-        var vertex = geometry.vertices[ i ];
-        vertex.x += Math.random() * 20 - 10;
-        vertex.y += Math.random() * 2;
-        vertex.z += Math.random() * 20 - 10;
-
-    }
-
-    for ( var i = 0, l = geometry.faces.length; i < l; i ++ ) {
-
-        var face = geometry.faces[ i ];
-        face.vertexColors[ 0 ] = new THREE.Color().setHSL( Math.random() * 0.2 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
-        face.vertexColors[ 1 ] = new THREE.Color().setHSL( Math.random() * 0.2 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
-        face.vertexColors[ 2 ] = new THREE.Color().setHSL( Math.random() * 0.2 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
-
-    }
-
-    material = new THREE.MeshBasicMaterial( { vertexColors: THREE.VertexColors } );
-
+    material = new THREE.MeshPhongMaterial();
+    material.map = texture;
     mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
     
@@ -63,8 +49,17 @@ function init() {
 function animate() {
     requestAnimationFrame(animate);
     
+    controls.isOnObject( true );
+
+    ray.ray.origin.copy( controls.getObject().position );
+    ray.ray.origin.y -= 10;
+
+
+    controls.update( Date.now() - time );
+    
     renderer.render(scene, camera);
-    //controls.update();
+    
+    time = Date.now();
 }
 
 function onWindowResize() {

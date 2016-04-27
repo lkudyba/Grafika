@@ -62,10 +62,20 @@
         <script src="PointerLockControls.js"></script>
         <script src="OrbitControls.js"></script>
         <script src="SceneBuilder.js"></script>
+        <script src="PointLocker.js"></script>
+        
+        <div id="blocker">
+
+			<div id="instructions">
+				<span style="font-size:40px">Click to play</span>
+				<br />
+				(W, A, S, D = Move, SPACE = Jump, MOUSE = Look around)
+			</div>
+
+		</div>
         
         <script>
-            
-            //build scene using SceneBuilder functions 
+            lockScreen();
             init();
             animate();
             
