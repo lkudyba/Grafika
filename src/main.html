@@ -63,6 +63,7 @@
         <script src="OrbitControls.js"></script>
         <script src="SceneBuilder.js"></script>
         <script src="PointLocker.js"></script>
+        <script src="Gun.js"></script>
         
         <div id="blocker">
 
@@ -75,8 +76,13 @@
 		</div>
         
         <script>
+            //Variables used in more than one script
+            var camera, scene;
+            
             lockScreen();
             init();
+            addCrossFire();
+            loadGun();
             animate();
             
         </script>

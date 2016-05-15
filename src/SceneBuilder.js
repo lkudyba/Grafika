@@ -1,7 +1,6 @@
 //global variables
-var camera, renderer, scene;
 var controls,time = Date.now();
-var ray;
+var ray, renderer;
 
 //scene attributes
 var WIDTH = window.innerWidth, HEIGHT = window.innerHeight;
@@ -25,7 +24,9 @@ function init() {
     
     geometry = new THREE.PlaneGeometry( 2000, 2000, 100, 100 );
     geometry.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );
-    var texture = THREE.ImageUtils.loadTexture("textures/floor-wood.jpg")
+    var texture = THREE.ImageUtils.loadTexture("textures/floor-wood.jpg");
+    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(15,15);
 
     material = new THREE.MeshPhongMaterial();
     material.map = texture;
@@ -53,8 +54,6 @@ function animate() {
 
     ray.ray.origin.copy( controls.getObject().position );
     ray.ray.origin.y -= 10;
-
-
     controls.update( Date.now() - time );
     
     renderer.render(scene, camera);
